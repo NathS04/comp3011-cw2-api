@@ -1,0 +1,32 @@
+[project]
+name = "comp3011-search-engine"
+version = "1.0.0"
+description = "A search engine tool for quotes.toscrape.com"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "benchmark: performance benchmarks (deselect with -m 'not benchmark')",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
