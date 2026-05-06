@@ -10,7 +10,6 @@ build/
 htmlcov/
 .pytest_cache/
 
-data/index.json
 
 .mypy_cache/
 .ruff_cache/
