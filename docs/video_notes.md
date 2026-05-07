@@ -12,7 +12,7 @@ Target duration: **4 minutes 40 seconds** (20-second buffer under the 5-minute l
 **Pre-requisite:** Index has been pre-built (full crawl takes ~20 minutes).
 
 1. **`build`** — Show the command starting, explain "6-second politeness window, BFS crawl of ~200 pages". Switch to pre-built output.
-2. **`load`** — Run live. "Loading the index — 4500 terms, 200 documents."
+2. **`load`** — Run live. "Loading the index — 4646 terms, 202 documents."
 3. **`print nonsense`** — Show posting list. Explain tf, positions, df.
 4. **`print world`** — Show a term with multiple documents.
 5. **`find indifference`** — Single-word search. "Conjunctive AND retrieval, ranked by TF-IDF."
@@ -36,15 +36,15 @@ Open and briefly explain key sections:
 
 Run: `pytest --cov=src --cov-report=term-missing -v`
 
-- "136 tests, 93% coverage."
-- "Includes unit, integration, and mocked network tests."
+- "158 tests, 92% coverage."
+- "Includes unit, integration, regression, and mocked network tests."
 - Point at one test: "This test mocks `requests.Session` to verify the crawler retries on HTTP 500 errors without hitting the network."
 
 ## 4:00–4:30 — Version Control (30s)
 
 Run: `git log --oneline --graph -20`
 
-- "30+ commits using conventional commit messages across feature branches."
+- "28 commits using conventional commit messages across feature branches."
 - "Tagged releases at v0.1, v0.2, v1.0."
 - Show one merge: "feature/ranking developed separately then merged to main."
 

@@ -130,10 +130,18 @@ def _has_exact_phrase(
 # ---------------------------------------------------------------------------
 
 def print_term(index: SearchIndex, word: str) -> str:
-    """Return a formatted string showing the index entry for *word*."""
+    """Return a formatted string showing the index entry for *word*.
+
+    Accepts exactly one searchable term.  Multi-word input is rejected
+    with a usage hint so that ``print`` and ``find`` have clearly
+    distinct semantics.
+    """
     tokens = tokenize(word)
     if not tokens:
         return "No valid term provided."
+
+    if len(tokens) > 1:
+        return "Usage: print <word>  (one term only; use 'find' for multi-word queries)"
 
     term = tokens[0]
     entry = index.terms.get(term)
@@ -160,12 +168,32 @@ def print_term(index: SearchIndex, word: str) -> str:
     return "\n".join(lines)
 
 
+def _parse_query(query: str) -> tuple[list[str], bool]:
+    """Parse *query*, detecting quoted exact-phrase syntax.
+
+    Returns ``(tokens, is_exact_phrase)``.  A query wrapped entirely in
+    double quotes (e.g. ``"good friends"``) is treated as an exact phrase
+    requirement — only documents where the terms appear consecutively are
+    returned.  Unquoted queries use standard conjunctive AND semantics.
+    """
+    stripped = query.strip()
+    if stripped.startswith('"') and stripped.endswith('"') and len(stripped) > 1:
+        inner = stripped[1:-1]
+        return tokenize(inner), True
+    return tokenize(stripped), False
+
+
 def find(index: SearchIndex, query: str) -> list[SearchResult]:
     """Find pages matching *query* (conjunctive AND), ranked by TF-IDF.
 
+    If the query is wrapped in double quotes (e.g. ``"good friends"``),
+    only documents containing the terms as a consecutive phrase are
+    returned.  Unquoted multi-word queries require all terms present but
+    in any order, with a 1.5× score bonus for exact-phrase matches.
+
     Returns an empty list if any query term is absent from the index.
     """
-    query_terms = tokenize(query)
+    query_terms, exact_phrase = _parse_query(query)
     if not query_terms:
         return []
 
@@ -174,10 +202,15 @@ def find(index: SearchIndex, query: str) -> list[SearchResult]:
     if not matching_docs:
         return []
 
+    require_phrase = exact_phrase and len(unique_terms) >= 2
+
     scored: list[SearchResult] = []
     for doc_id in matching_docs:
+        is_phrase = _has_exact_phrase(index, doc_id, unique_terms)
+        if require_phrase and not is_phrase:
+            continue
         score = _tfidf_score(index, doc_id, unique_terms)
-        if _has_exact_phrase(index, doc_id, unique_terms):
+        if is_phrase:
             score *= PHRASE_BONUS
         doc = index.documents[doc_id]
         scored.append(SearchResult(
@@ -187,7 +220,7 @@ def find(index: SearchIndex, query: str) -> list[SearchResult]:
             score=score,
         ))
 
-    scored.sort(key=lambda r: r.score, reverse=True)
+    scored.sort(key=lambda r: (-r.score, r.url, r.doc_id))
     return scored
 
 

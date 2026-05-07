@@ -12,6 +12,7 @@ Design decisions (justified from COMP3011 Lecture 9):
 from __future__ import annotations
 
 import logging
+import re
 import time
 from collections import deque
 from collections.abc import Callable
@@ -33,14 +34,19 @@ REQUEST_TIMEOUT = 10
 _SKIP_PATHS = frozenset({"/login", "/logout", "/static"})
 
 
+_PAGE1_SUFFIX_RE = re.compile(r"^(/(?:tag|author)/.+)/page/1$")
+
+
 def normalize_url(url: str, base: str = BASE_URL) -> str | None:
     """Normalise *url* relative to *base* and return it, or ``None`` to skip.
 
     Rules:
     - Resolve relative URLs against *base*.
-    - Strip fragments and trailing slashes.
+    - Strip fragments, query strings, and trailing slashes.
     - Reject external domains, login pages, and static assets.
-    - Canonicalise ``/`` to ``/page/1/`` so they are treated as one page.
+    - Canonicalise ``/`` and ``/page/1`` to the same URL.
+    - Canonicalise ``/tag/X/page/1`` to ``/tag/X`` (and likewise for author
+      paths) so the first pagination page is never a duplicate of the base.
     """
     absolute = urljoin(base + "/", url)
     parsed = urlparse(absolute)
@@ -59,6 +65,10 @@ def normalize_url(url: str, base: str = BASE_URL) -> str | None:
 
     if path == "/":
         path = "/page/1"
+
+    m = _PAGE1_SUFFIX_RE.match(path)
+    if m:
+        path = m.group(1)
 
     normalised = urlunparse((
         parsed.scheme or "https",
@@ -88,6 +98,7 @@ def _fetch_page(
     url: str,
     *,
     timeout: int = REQUEST_TIMEOUT,
+    sleep_fn: Callable[[float], None] = time.sleep,
 ) -> requests.Response | None:
     """Fetch *url* with up to ``MAX_RETRIES`` attempts on transient errors."""
     for attempt in range(1, MAX_RETRIES + 1):
@@ -102,7 +113,7 @@ def _fetch_page(
                     MAX_RETRIES,
                 )
                 if attempt < MAX_RETRIES:
-                    time.sleep(DEFAULT_POLITENESS_SECONDS * attempt)
+                    sleep_fn(DEFAULT_POLITENESS_SECONDS * attempt)
                     continue
                 return None
             return response
@@ -115,7 +126,7 @@ def _fetch_page(
                 exc,
             )
             if attempt < MAX_RETRIES:
-                time.sleep(DEFAULT_POLITENESS_SECONDS * attempt)
+                sleep_fn(DEFAULT_POLITENESS_SECONDS * attempt)
     return None
 
 
@@ -157,6 +168,7 @@ def crawl(
     assert start_normalised is not None
 
     frontier: deque[str] = deque([start_normalised])
+    enqueued: set[str] = {start_normalised}
     visited: set[str] = set()
     results: list[CrawlResult] = []
     is_first_request = True
@@ -171,7 +183,7 @@ def crawl(
             sleep_fn(politeness)
         is_first_request = False
 
-        response = _fetch_page(session, url)
+        response = _fetch_page(session, url, sleep_fn=sleep_fn)
         if response is None:
             logger.info("Skipping %s after failed retries", url)
             continue
@@ -199,7 +211,8 @@ def crawl(
             on_page(result)
 
         for link in extract_links(html, url):
-            if link not in visited:
+            if link not in enqueued:
+                enqueued.add(link)
                 frontier.append(link)
 
         logger.info("Crawled %s (%d pages so far)", url, len(results))

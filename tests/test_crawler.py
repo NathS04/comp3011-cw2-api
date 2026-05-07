@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import requests
 
@@ -55,7 +55,21 @@ class TestNormalizeUrl:
 
     def test_tag_url(self) -> None:
         result = normalize_url("/tag/love/page/1/", BASE_URL)
-        assert result == "https://quotes.toscrape.com/tag/love/page/1"
+        assert result == "https://quotes.toscrape.com/tag/love"
+
+    def test_tag_page1_canonicalised_to_base(self) -> None:
+        base = normalize_url("/tag/love", BASE_URL)
+        page1 = normalize_url("/tag/love/page/1/", BASE_URL)
+        assert base == page1
+
+    def test_tag_page2_not_collapsed(self) -> None:
+        result = normalize_url("/tag/love/page/2/", BASE_URL)
+        assert result == "https://quotes.toscrape.com/tag/love/page/2"
+
+    def test_author_page1_canonicalised(self) -> None:
+        base = normalize_url("/author/J-K-Rowling", BASE_URL)
+        page1 = normalize_url("/author/J-K-Rowling/page/1/", BASE_URL)
+        assert base == page1
 
     def test_relative_author_from_page(self) -> None:
         result = normalize_url(
@@ -146,8 +160,7 @@ class TestCrawlBehaviour:
         session.get.return_value = _mock_response("", status=500)
         session.headers = {}
 
-        with patch("src.crawler.time.sleep"):
-            results = crawl(BASE_URL, session=session, sleep_fn=MagicMock())
+        results = crawl(BASE_URL, session=session, sleep_fn=MagicMock())
         assert results == []
         assert session.get.call_count == 3  # MAX_RETRIES
 
@@ -157,8 +170,7 @@ class TestCrawlBehaviour:
         session.get.side_effect = requests.exceptions.Timeout("timed out")
         session.headers = {}
 
-        with patch("src.crawler.time.sleep"):
-            results = crawl(BASE_URL, session=session, sleep_fn=MagicMock())
+        results = crawl(BASE_URL, session=session, sleep_fn=MagicMock())
         assert results == []
 
     def test_handles_connection_error(self) -> None:
@@ -166,8 +178,7 @@ class TestCrawlBehaviour:
         session.get.side_effect = requests.exceptions.ConnectionError("refused")
         session.headers = {}
 
-        with patch("src.crawler.time.sleep"):
-            results = crawl(BASE_URL, session=session, sleep_fn=MagicMock())
+        results = crawl(BASE_URL, session=session, sleep_fn=MagicMock())
         assert results == []
 
     def test_bfs_order(self) -> None:

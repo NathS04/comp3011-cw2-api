@@ -10,9 +10,31 @@ The tool crawls the target website, builds an inverted index with term frequenci
 - **Inverted index** storing term frequency, word positions, document frequency, and title-field frequency per posting.
 - **Conjunctive (AND) search** — multi-word queries return only pages containing all terms.
 - **TF-IDF ranking** — results are ranked by log-normalised TF × IDF with a title-field boost.
-- **Exact phrase boost** — when all query terms appear consecutively in a document, the score is multiplied by 1.5×.
+- **Exact phrase search** — wrap a query in double quotes (`find "good friends"`) to require consecutive term positions. Unquoted queries still apply a 1.5× score boost for phrase matches.
 - **Query suggestions** — misspelled terms trigger edit-distance-based suggestions from the index vocabulary.
 - **JSON index storage** — human-readable, portable, inspectable by markers.
+
+## Architecture
+
+```
+                   ┌──────────┐
+                   │  main.py │  CLI shell (build / load / print / find)
+                   └────┬─────┘
+            ┌───────────┼───────────┐
+            ▼           ▼           ▼
+      ┌──────────┐ ┌──────────┐ ┌──────────┐
+      │crawler.py│ │indexer.py│ │ search.py│
+      │ BFS      │ │ build    │ │ TF-IDF   │
+      │ politenes│ │ inv.index│ │ phrase   │
+      └────┬─────┘ └────┬─────┘ └────┬─────┘
+           │             │            │
+      ┌────▼─────┐ ┌─────▼────┐ ┌────▼─────┐
+      │tokenizer │ │ models.py│ │storage.py│
+      │ BS4 parse│ │dataclasse│ │ JSON I/O │
+      └──────────┘ └──────────┘ └──────────┘
+```
+
+**Data flow:** `crawl → extract_page_text → tokenize → build_index → save_index` (build), then `load_index → find/print_term` (query).
 
 ## Project Structure
 
@@ -27,9 +49,16 @@ src/
   models.py      — Shared dataclasses
 tests/
   test_crawler.py, test_indexer.py, test_search.py, ...
+  test_regression.py — Invariant and regression tests
   fixtures/      — Static HTML for deterministic offline tests
+scripts/
+  benchmark.py   — Performance measurement script
 data/
   index.json     — Generated index file (after running 'build')
+docs/
+  benchmarks.md  — Performance results and complexity analysis
+  genai_log.md   — GenAI usage log and critical reflections
+  video_notes.md — 5-minute video demo script
 ```
 
 ## Installation
@@ -67,8 +96,8 @@ Crawling https://quotes.toscrape.com (this may take ~20 minutes due to politenes
   Crawled: https://quotes.toscrape.com/page/1
   Crawled: https://quotes.toscrape.com/page/2
   ...
-Crawled 200 pages.
-Index built: 4500 terms across 200 documents.
+Crawled 202 pages.
+Index built: 4646 terms across 202 documents.
 Index saved to data/index.json
 ```
 
@@ -76,7 +105,7 @@ Index saved to data/index.json
 
 ```
 > load
-Index loaded: 4500 terms, 200 documents.
+Index loaded: 4646 terms, 202 documents.
 ```
 
 **`print <word>`** — Display the inverted-index entry for a word.
@@ -101,7 +130,17 @@ Found 3 page(s):
   2. [0.8901] Quotes to Scrape
      https://quotes.toscrape.com/page/2
   3. [0.4567] Quotes to Scrape
-     https://quotes.toscrape.com/tag/friends/page/1
+     https://quotes.toscrape.com/tag/friends
+```
+
+Wrap the query in double quotes for **exact phrase** matching (terms must appear consecutively):
+
+```
+> find "good friends"
+Found 1 page(s):
+
+  1. [1.8518] Quotes to Scrape
+     https://quotes.toscrape.com/page/5
 ```
 
 **`quit`** — Exit the shell.
@@ -126,13 +165,14 @@ The project targets 90%+ code coverage. Tests use local HTML fixture files and m
 
 | Category | Files | Description |
 |----------|-------|-------------|
-| Unit | `test_tokenizer.py` | 24 tokenization edge cases |
+| Unit | `test_tokenizer.py` | Tokenization edge cases |
 | Unit | `test_crawler.py` | URL normalisation, BFS, mocked retries |
 | Unit | `test_indexer.py` | Index building, tf/positions/df verification |
 | Unit | `test_storage.py` | JSON roundtrip, error handling |
 | Unit | `test_search.py` | Query, ranking, phrase boost, suggestions |
 | Unit | `test_main.py` | CLI shell commands and I/O |
 | Integration | `test_integration.py` | Full build→save→load→find pipeline |
+| Regression | `test_regression.py` | Canonical URLs, deterministic ordering, index invariants |
 
 ## Dependencies
 
@@ -145,6 +185,25 @@ The project targets 90%+ code coverage. Tests use local HTML fixture files and m
 | `coverage` | Coverage reporting |
 | `ruff` | Linting (PEP 8, import sorting) |
 | `mypy` | Static type checking |
+
+## Benchmarks
+
+Performance benchmarks are in [`docs/benchmarks.md`](docs/benchmarks.md). To reproduce:
+
+```bash
+python -m scripts.benchmark --runs 50
+```
+
+Key results (Apple Silicon, Python 3.14):
+
+| Operation | Median |
+|-----------|--------|
+| Index load (~2.7 MB) | 28.5 ms |
+| Single-word query | 0.04 ms |
+| Multi-word query | 0.03 ms |
+| Missing term | 0.001 ms |
+
+All queries complete in sub-millisecond time. See `docs/benchmarks.md` for full complexity analysis.
 
 ## Design Decisions
 
