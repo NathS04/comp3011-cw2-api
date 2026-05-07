@@ -38,7 +38,7 @@ Requires **Python 3.11+**.
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/NathS04/comp3011-cw2-api.git
 cd comp3011-cw2-api
 
 # Create a virtual environment
