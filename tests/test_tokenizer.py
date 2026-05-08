@@ -126,3 +126,14 @@ class TestExtractPageText:
     def test_page2_body_contains_jim_morrison(self, page2_html: str) -> None:
         _, body = extract_page_text(page2_html)
         assert "Jim Morrison" in body
+
+    def test_generic_html_falls_back_to_body_text(self) -> None:
+        """Pages without quote/author divs fall back to whole-body text."""
+        html = (
+            "<html><head><title>Generic</title></head>"
+            "<body><p>Some loose paragraph text here.</p></body></html>"
+        )
+        title, body = extract_page_text(html)
+        assert title == "Generic"
+        assert "loose" in body.lower()
+        assert "paragraph" in body.lower()

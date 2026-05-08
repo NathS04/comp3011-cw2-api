@@ -53,6 +53,18 @@ class TestSearchShell:
         assert "error" in captured.out.lower()
         assert shell.index is None
 
+    def test_load_corrupt_json_handled(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """A malformed index file should produce a clean error, not a crash."""
+        bad = tmp_path / "broken.json"
+        bad.write_text("{not valid json")
+        shell = SearchShell(index_path=bad)
+        shell.do_load()
+        captured = capsys.readouterr()
+        assert "error" in captured.out.lower()
+        assert shell.index is None
+
     def test_print_without_index(self, capsys: pytest.CaptureFixture[str]) -> None:
         shell = SearchShell()
         shell.do_print("world")

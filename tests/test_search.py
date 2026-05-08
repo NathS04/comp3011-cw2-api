@@ -212,6 +212,14 @@ class TestPrintTerm:
         output = print_term(index, "xyznonexistent")
         assert "not found" in output.lower()
 
+    def test_missing_term_with_close_match_offers_suggestion(
+        self, index: SearchIndex
+    ) -> None:
+        """A near-miss should print a 'Did you mean' line."""
+        output = print_term(index, "worls")  # one letter off 'world'
+        assert "did you mean" in output.lower()
+        assert "world" in output.lower()
+
     def test_empty_input(self, index: SearchIndex) -> None:
         output = print_term(index, "")
         assert "no valid" in output.lower()
@@ -219,6 +227,17 @@ class TestPrintTerm:
     def test_case_insensitive(self, index: SearchIndex) -> None:
         output = print_term(index, "WORLD")
         assert "world" in output
+
+
+class TestEdgeCases:
+    def test_tfidf_score_with_empty_index(self) -> None:
+        empty = SearchIndex(metadata={}, documents={}, terms={})
+        score = _tfidf_score(empty, "doc_0000", ["anything"])
+        assert score == 0.0
+
+    def test_intersect_with_empty_index(self) -> None:
+        empty = SearchIndex(metadata={}, documents={}, terms={})
+        assert intersect_postings(empty, ["x", "y"]) == set()
 
 
 # ── Query suggestions ────────────────────────────────────────────────────
