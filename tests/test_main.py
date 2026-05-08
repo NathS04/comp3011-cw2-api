@@ -292,6 +292,21 @@ class TestDoBuild:
         captured = capsys.readouterr()
         assert "http://test.com/page/1" in captured.out
 
+    def test_do_build_handles_ctrl_c(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """Ctrl+C during crawl should cancel cleanly without saving an index."""
+        index_path = tmp_path / "out.json"
+        shell = SearchShell(index_path=index_path)
+
+        with patch("src.main.crawl", side_effect=KeyboardInterrupt):
+            shell.do_build()
+
+        captured = capsys.readouterr()
+        assert "cancelled" in captured.out.lower()
+        assert shell.index is None
+        assert not index_path.exists()
+
 
 class TestEntryPoint:
     """The main() entry point wires up logging and starts the shell."""

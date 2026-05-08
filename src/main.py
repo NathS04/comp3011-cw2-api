@@ -35,10 +35,15 @@ class SearchShell:
         """Crawl the website, build the index, and save it."""
         print(f"Crawling {BASE_URL} (this may take ~20 minutes due to politeness window)...")
 
-        pages = crawl(
-            BASE_URL,
-            on_page=lambda r: print(f"  Crawled: {r.url}"),
-        )
+        try:
+            pages = crawl(
+                BASE_URL,
+                on_page=lambda r: print(f"  Crawled: {r.url}"),
+            )
+        except KeyboardInterrupt:
+            print("\nBuild cancelled by user (Ctrl+C). Index not saved.")
+            return
+
         print(f"\nCrawled {len(pages)} pages.")
 
         print("Building inverted index...")
