@@ -10,6 +10,7 @@ Provides an interactive shell with the four required commands:
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from src.crawler import BASE_URL, crawl
@@ -17,6 +18,7 @@ from src.indexer import build_index
 from src.models import SearchIndex
 from src.search import find, get_suggestions, print_term
 from src.storage import load_index, save_index
+from src.tokenizer import tokenize
 
 DEFAULT_INDEX_PATH = Path("data/index.json")
 
@@ -85,8 +87,6 @@ class SearchShell:
 
         results = find(self.index, args)
         if not results:
-            from src.tokenizer import tokenize
-
             query_terms = tokenize(args)
             print(f"No pages found containing all terms: {query_terms}")
             for term in query_terms:
@@ -137,6 +137,11 @@ class SearchShell:
 
 
 def main() -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(asctime)s] %(levelname)s %(name)s: %(message)s",
+        datefmt="%H:%M:%S",
+    )
     shell = SearchShell()
     shell.run()
 
