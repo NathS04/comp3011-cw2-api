@@ -204,7 +204,52 @@ class TestIndexInvariants:
                 )
 
 
-# ── Roundtrip preserves ordering and scores ──────────────────────────────
+# ── Title/body phrase boundary ───────────────────────────────────────────
+
+
+class TestTitleBodyBoundary:
+    """Phrase queries must not match across the title/body boundary."""
+
+    def _index_with_title_body(self, title: str, body: str) -> SearchIndex:
+        from src.indexer import build_index
+
+        html = (
+            f"<html><head><title>{title}</title></head>"
+            f"<body><div class=\"quote\">"
+            f"<span class=\"text\">{body}</span>"
+            f"<small class=\"author\">x</small>"
+            f"</div></body></html>"
+        )
+        page = CrawlResult(
+            url="http://test.com/p",
+            title=title,
+            html_content=html,
+            status_code=200,
+        )
+        return build_index([page])
+
+    def test_phrase_does_not_cross_title_body_boundary(self) -> None:
+        index = self._index_with_title_body("foo bar", "baz qux")
+        results = find(index, '"bar baz"')
+        assert results == [], (
+            "Phrase 'bar baz' must not match across title/body boundary"
+        )
+
+    def test_phrase_within_title_still_matches(self) -> None:
+        index = self._index_with_title_body("foo bar", "other content")
+        results = find(index, '"foo bar"')
+        assert len(results) == 1
+
+    def test_phrase_within_body_still_matches(self) -> None:
+        index = self._index_with_title_body("title", "alpha beta gamma")
+        results = find(index, '"alpha beta"')
+        assert len(results) == 1
+
+    def test_unquoted_query_still_matches_across_fields(self) -> None:
+        """Conjunctive AND should still match even if terms are split fields."""
+        index = self._index_with_title_body("foo bar", "baz qux")
+        results = find(index, "bar baz")
+        assert len(results) == 1
 
 
 # ── Quoted exact phrase search ───────────────────────────────────────────
