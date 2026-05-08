@@ -115,11 +115,11 @@ Index loaded: 4646 terms, 202 documents.
 Term: 'nonsense'
   Document frequency (df): 5
   Postings:
-    doc_0035 | https://quotes.toscrape.com/page/2 | tf=1 | title_tf=0 | positions=[401]
-    doc_0038 | https://quotes.toscrape.com/tag/life | tf=1 | title_tf=0 | positions=[441]
-    doc_0082 | https://quotes.toscrape.com/tag/regrets | tf=1 | title_tf=0 | positions=[54]
-    doc_0135 | https://quotes.toscrape.com/tag/fantasy | tf=1 | title_tf=0 | positions=[5]
-    doc_0185 | https://quotes.toscrape.com/page/7 | tf=1 | title_tf=0 | positions=[296]
+    doc_0035 | https://quotes.toscrape.com/page/2 | tf=1 | title_tf=0 | positions=[501]
+    doc_0038 | https://quotes.toscrape.com/tag/life | tf=1 | title_tf=0 | positions=[541]
+    doc_0082 | https://quotes.toscrape.com/tag/regrets | tf=1 | title_tf=0 | positions=[154]
+    doc_0135 | https://quotes.toscrape.com/tag/fantasy | tf=1 | title_tf=0 | positions=[105]
+    doc_0185 | https://quotes.toscrape.com/page/7 | tf=1 | title_tf=0 | positions=[396]
 ```
 
 **`find <query>`** — Find pages containing all query terms, ranked by TF-IDF.
@@ -203,7 +203,7 @@ Performance benchmarks are in [`docs/benchmarks.md`](docs/benchmarks.md). To rep
 python -m scripts.benchmark --runs 50
 ```
 
-Key results (Apple Silicon, Python 3.14):
+Key results (Apple Silicon, Python 3.11+):
 
 | Operation | Median |
 |-----------|--------|

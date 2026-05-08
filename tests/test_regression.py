@@ -303,9 +303,6 @@ class TestQuotedPhraseSearch:
         assert results == []
 
 
-# ── Roundtrip preserves ordering and scores ──────────────────────────────
-
-
 class TestRoundtripOrdering:
     def test_scores_within_tolerance(self, tmp_path: Path) -> None:
         index = _fixture_index()

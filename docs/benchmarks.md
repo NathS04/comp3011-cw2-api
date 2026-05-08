@@ -3,7 +3,7 @@
 ## Environment
 
 - **Machine:** Apple Silicon (ARM64), macOS
-- **Python:** 3.14
+- **Python:** 3.11+ (CPython)
 - **Index:** 4,646 terms across 202 documents (~2.6 MB JSON)
 
 ## How to Reproduce

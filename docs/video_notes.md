@@ -36,17 +36,17 @@ Open and briefly explain key sections:
 
 Run: `pytest --cov=src --cov-report=term-missing -v`
 
-- "163 tests, 92% coverage."
+- "171 tests, 92%+ coverage."
 - "Includes unit, integration, regression, and mocked network tests."
 - Point at one test: "This test mocks `requests.Session` to verify the crawler retries on HTTP 500 errors without hitting the network."
 
 ## 4:00–4:30 — Version Control (30s)
 
-Run: `git log --oneline --graph -20`
+Run: `git log --oneline --graph -20` then `git tag`
 
-- "30 commits using conventional commit messages across feature branches."
-- "Tagged releases at v0.1, v0.2, v1.0."
-- Show one merge: "feature/ranking developed separately then merged to main."
+- "Conventional-commit messages across eight feature branches merged into main."
+- "Tagged releases v0.1 (first end-to-end pipeline), v0.5 (all four CLI commands working), v1.0 (submission)."
+- Show one merge: "feature/search developed separately then merged to main."
 
 ## 4:30–5:00 — GenAI Evaluation (30s)
 
