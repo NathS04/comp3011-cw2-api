@@ -10,6 +10,7 @@ Provides an interactive shell with the four required commands:
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 
@@ -54,17 +55,20 @@ class SearchShell:
         """Load the index from disk."""
         try:
             self.index = load_index(self.index_path)
-            print(
-                f"Index loaded: {self.index.metadata['num_terms']} terms, "
-                f"{self.index.metadata['num_documents']} documents."
-            )
         except FileNotFoundError:
             print(
                 f"Error: No index file found at {self.index_path}. "
                 "Run 'build' first."
             )
-        except Exception as exc:
+            return
+        except (json.JSONDecodeError, KeyError, OSError, UnicodeDecodeError) as exc:
             print(f"Error loading index: {exc}")
+            return
+
+        print(
+            f"Index loaded: {self.index.metadata['num_terms']} terms, "
+            f"{self.index.metadata['num_documents']} documents."
+        )
 
     def do_print(self, args: str) -> None:
         """Print the inverted-index entry for a word."""

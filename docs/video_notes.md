@@ -7,7 +7,7 @@ Target duration: **4 minutes 40 seconds** (20-second buffer under the 5-minute l
 - "This is my COMP3011 search engine tool for quotes.toscrape.com."
 - Briefly show the repo structure in the IDE file tree.
 
-## 0:10–2:00 — Live Demonstration (1 min 50s)
+## 0:10–1:50 — Live Demonstration (1 min 40s)
 
 **Pre-requisite:** Index has been pre-built (full crawl takes ~20 minutes).
 
@@ -22,7 +22,7 @@ Target duration: **4 minutes 40 seconds** (20-second buffer under the 5-minute l
    - `find` (empty) — "Clear usage message."
    - `print zzzzz` — "Term not found, with suggestions."
 
-## 2:00–3:30 — Code Walkthrough (1 min 30s)
+## 1:50–3:10 — Code Walkthrough (1 min 20s)
 
 Open and briefly explain key sections:
 
@@ -32,7 +32,7 @@ Open and briefly explain key sections:
 4. **`src/models.py`** — "Dataclass-based, fully typed. Custom `to_dict`/`from_dict` for clean JSON serialisation."
 5. **Design choice:** "JSON for index storage — human-readable and inspectable."
 
-## 3:30–4:00 — Testing (30s)
+## 3:10–3:40 — Testing (30s)
 
 Run: `pytest --cov=src --cov-report=term-missing -v`
 
@@ -40,7 +40,7 @@ Run: `pytest --cov=src --cov-report=term-missing -v`
 - "Includes unit, integration, regression, and mocked network tests."
 - Point at one test: "This test mocks `requests.Session` to verify the crawler retries on HTTP 500 errors without hitting the network."
 
-## 4:00–4:30 — Version Control (30s)
+## 3:40–4:10 — Version Control (30s)
 
 Run: `git log --oneline --graph -20` then `git tag`
 
@@ -48,7 +48,7 @@ Run: `git log --oneline --graph -20` then `git tag`
 - "Tagged releases v0.1 (first end-to-end pipeline), v0.5 (all four CLI commands working), v1.0 (submission)."
 - Show one merge: "feature/search developed separately then merged to main."
 
-## 4:30–5:00 — GenAI Evaluation (30s)
+## 4:10–4:40 — GenAI Evaluation (30s)
 
 - "I used GitHub Copilot through the University's secure access as my AI assistant."
 - "AI was helpful for BeautifulSoup API guidance and test scaffolding."

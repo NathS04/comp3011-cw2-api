@@ -25,7 +25,7 @@ The tool crawls the target website, builds an inverted index with term frequenci
       ┌──────────┐ ┌──────────┐ ┌──────────┐
       │crawler.py│ │indexer.py│ │ search.py│
       │ BFS      │ │ build    │ │ TF-IDF   │
-      │ politenes│ │ inv.index│ │ phrase   │
+      │ retry    │ │ inv.idx  │ │ phrase   │
       └────┬─────┘ └────┬─────┘ └────┬─────┘
            │             │            │
       ┌────▼─────┐ ┌─────▼────┐ ┌────▼─────┐
@@ -240,3 +240,12 @@ Where `title_boost = 2.0` if the term appears in the page title.
 - **Index build:** O(P × W) where W is the average number of words per page.
 - **Query (find):** O(K₁ + K₂ + ... + Kₙ) where Kᵢ is the length of each term's posting list, using set intersection starting from the shortest list.
 - **Phrase detection:** O(S × Q) where S is the number of starting positions and Q is the number of query terms.
+
+## References
+
+- Croft, W. B., Metzler, D., and Strohman, T. (2015). *Search Engines: Information Retrieval in Practice*. Pearson — TF-IDF formulation, posting-list intersection, and field-weighted retrieval.
+- COMP3011 Web Services and Web Data lecture material (University of Leeds, 2025–26): Lecture 9 (Web Crawling), Lecture 12 (Indexing), Lecture 13 (Retrieval and Ranking).
+- Python `requests` library — <https://requests.readthedocs.io/>
+- Beautiful Soup 4 documentation — <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>
+- `difflib` standard library (used for `get_close_matches` query suggestions) — <https://docs.python.org/3/library/difflib.html>
+- Target dataset: <https://quotes.toscrape.com/> — practice site provided by the brief.

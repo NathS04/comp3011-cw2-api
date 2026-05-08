@@ -165,7 +165,10 @@ def crawl(
     start_normalised = normalize_url(seed_url, seed_url)
     if start_normalised is None:
         start_normalised = normalize_url("/", seed_url)
-    assert start_normalised is not None
+    if start_normalised is None:
+        raise ValueError(
+            f"seed_url {seed_url!r} cannot be normalised to a crawlable URL"
+        )
 
     frontier: deque[str] = deque([start_normalised])
     enqueued: set[str] = {start_normalised}
