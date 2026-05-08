@@ -4,7 +4,7 @@
 
 - **Machine:** Apple Silicon (ARM64), macOS
 - **Python:** 3.14
-- **Index:** 4,646 terms across 202 documents (~2.7 MB JSON)
+- **Index:** 4,646 terms across 202 documents (~2.6 MB JSON)
 
 ## How to Reproduce
 
@@ -20,19 +20,19 @@ Benchmarks are local and reproducible. They are not included in CI to avoid flak
 
 | Metric | Value |
 |--------|-------|
-| Median | 28.5 ms |
-| Mean   | 31.7 ms |
-| Stdev  | 13.3 ms |
+| Median | 37.4 ms |
+| Mean   | 49.5 ms |
+| Stdev  | 32.2 ms |
 
-Loading a ~2.8 MB JSON index into fully typed Python dataclasses completes in under 30 ms at the median. This is fast enough that `load` feels instantaneous in the CLI.
+Loading a ~2.6 MB JSON index into fully typed Python dataclasses completes in under 40 ms at the median. This is fast enough that `load` feels instantaneous in the CLI.
 
 ### Query Latency (50 runs each)
 
 | Query | Median (ms) | Results |
 |-------|-------------|---------|
-| `world` | 0.043 | 48 |
-| `einstein` | 0.032 | 36 |
-| `good friends` | 0.032 | 19 |
+| `world` | 0.040 | 43 |
+| `einstein` | 0.030 | 33 |
+| `good friends` | 0.022 | 13 |
 | `love humor inspirational` | 0.011 | 4 |
 | `xyznonexistent` | 0.001 | 0 |
 
@@ -42,16 +42,16 @@ All queries complete in sub-millisecond time. The conjunctive AND intersection +
 
 | Term | df | Total occurrences |
 |------|----|-------------------|
-| quotes | 212 | 218 |
-| to | 212 | 833 |
-| scrape | 212 | 212 |
-| a | 149 | 750 |
-| the | 144 | 1,275 |
-| is | 128 | 392 |
-| and | 122 | 764 |
-| of | 120 | 777 |
-| it | 100 | 263 |
-| that | 98 | 219 |
+| quotes | 202 | 206 |
+| to | 202 | 761 |
+| scrape | 202 | 202 |
+| a | 139 | 684 |
+| the | 135 | 1,205 |
+| is | 118 | 319 |
+| and | 113 | 710 |
+| of | 111 | 725 |
+| it | 91 | 222 |
+| that | 90 | 186 |
 
 These common terms appear in most documents. The posting-list intersection starts from the shortest list, so multi-term queries with at least one selective term are fast.
 

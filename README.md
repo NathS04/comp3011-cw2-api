@@ -198,9 +198,9 @@ Key results (Apple Silicon, Python 3.14):
 
 | Operation | Median |
 |-----------|--------|
-| Index load (~2.7 MB) | 28.5 ms |
+| Index load (~2.6 MB) | 37.4 ms |
 | Single-word query | 0.04 ms |
-| Multi-word query | 0.03 ms |
+| Multi-word query | 0.02 ms |
 | Missing term | 0.001 ms |
 
 All queries complete in sub-millisecond time. See `docs/benchmarks.md` for full complexity analysis.

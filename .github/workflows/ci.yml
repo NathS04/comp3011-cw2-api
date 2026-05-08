@@ -34,4 +34,4 @@ jobs:
         run: pytest --cov=src --cov-report=term-missing -m "not benchmark" -v
 
       - name: Check coverage threshold
-        run: coverage report --fail-under=85
+        run: coverage report --fail-under=90
