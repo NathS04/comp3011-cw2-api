@@ -113,34 +113,43 @@ Index loaded: 4646 terms, 202 documents.
 ```
 > print nonsense
 Term: 'nonsense'
-  Document frequency (df): 2
+  Document frequency (df): 5
   Postings:
-    doc_0003 | https://quotes.toscrape.com/page/1 | tf=1 | title_tf=0 | positions=[42]
-    doc_0085 | https://quotes.toscrape.com/author/Dr-Seuss | tf=1 | title_tf=0 | positions=[15]
+    doc_0035 | https://quotes.toscrape.com/page/2 | tf=1 | title_tf=0 | positions=[401]
+    doc_0038 | https://quotes.toscrape.com/tag/life | tf=1 | title_tf=0 | positions=[441]
+    doc_0082 | https://quotes.toscrape.com/tag/regrets | tf=1 | title_tf=0 | positions=[54]
+    doc_0135 | https://quotes.toscrape.com/tag/fantasy | tf=1 | title_tf=0 | positions=[5]
+    doc_0185 | https://quotes.toscrape.com/page/7 | tf=1 | title_tf=0 | positions=[296]
 ```
 
 **`find <query>`** — Find pages containing all query terms, ranked by TF-IDF.
 
 ```
 > find good friends
-Found 3 page(s):
+Found 13 page(s):
 
-  1. [1.2345] Quotes to Scrape
-     https://quotes.toscrape.com/page/5
-  2. [0.8901] Quotes to Scrape
-     https://quotes.toscrape.com/page/2
-  3. [0.4567] Quotes to Scrape
+  1. [4.8444] Quotes to Scrape
      https://quotes.toscrape.com/tag/friends
+  2. [4.7657] Quotes to Scrape
+     https://quotes.toscrape.com/page/2
+  3. [4.5733] Quotes to Scrape
+     https://quotes.toscrape.com/tag/life
+  ...
 ```
 
 Wrap the query in double quotes for **exact phrase** matching (terms must appear consecutively):
 
 ```
 > find "good friends"
-Found 1 page(s):
+Found 6 page(s):
 
-  1. [1.8518] Quotes to Scrape
-     https://quotes.toscrape.com/page/5
+  1. [4.8444] Quotes to Scrape
+     https://quotes.toscrape.com/tag/friends
+  2. [4.7657] Quotes to Scrape
+     https://quotes.toscrape.com/page/2
+  3. [4.5733] Quotes to Scrape
+     https://quotes.toscrape.com/tag/life
+  ...
 ```
 
 **`quit`** — Exit the shell.

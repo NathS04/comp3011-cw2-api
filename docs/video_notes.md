@@ -36,7 +36,7 @@ Open and briefly explain key sections:
 
 Run: `pytest --cov=src --cov-report=term-missing -v`
 
-- "158 tests, 92% coverage."
+- "163 tests, 92% coverage."
 - "Includes unit, integration, regression, and mocked network tests."
 - Point at one test: "This test mocks `requests.Session` to verify the crawler retries on HTTP 500 errors without hitting the network."
 
@@ -44,14 +44,14 @@ Run: `pytest --cov=src --cov-report=term-missing -v`
 
 Run: `git log --oneline --graph -20`
 
-- "28 commits using conventional commit messages across feature branches."
+- "30 commits using conventional commit messages across feature branches."
 - "Tagged releases at v0.1, v0.2, v1.0."
 - Show one merge: "feature/ranking developed separately then merged to main."
 
 ## 4:30–5:00 — GenAI Evaluation (30s)
 
-- "I used Cursor with Claude as my AI assistant throughout development."
-- "AI was helpful for BeautifulSoup API guidance and fixture generation."
+- "I used GitHub Copilot through the University's secure access as my AI assistant."
+- "AI was helpful for BeautifulSoup API guidance and test scaffolding."
 - "But I had to fix its tokenizer — it broke contractions like 'it's'."
 - "I deliberately implemented TF-IDF ranking without AI to ensure I understood the algorithm from Lecture 12."
 - "Full usage log with reflections is in `docs/genai_log.md`."

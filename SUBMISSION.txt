@@ -1,0 +1,16 @@
+COMP3011 Coursework 2 — Search Engine Tool
+===========================================
+
+Student: Nathan S
+Module: COMP3011 Web Services and Web Data
+University of Leeds, 2025–2026
+
+GitHub Repository:
+https://github.com/NathS04/comp3011-cw2-api
+
+Video Demonstration:
+[PASTE YOUR UNLISTED YOUTUBE OR ONEDRIVE LINK HERE]
+
+Compiled Index File:
+Included in the submission as data/index.json (also available in the GitHub repository).
+The index contains 4,646 terms across 202 documents crawled from https://quotes.toscrape.com.
