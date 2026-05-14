@@ -9,7 +9,7 @@ GitHub Repository:
 https://github.com/NathS04/comp3011-cw2-api
 
 Video Demonstration:
-[PASTE YOUR UNLISTED YOUTUBE OR ONEDRIVE LINK HERE]
+https://youtu.be/ipBjKDQjJxQ
 
 Compiled Index File:
 Included in the submission as data/index.json (also available in the GitHub repository).
