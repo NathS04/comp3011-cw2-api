@@ -1,18 +1,26 @@
-# COMP3011 Search Engine Tool
+# Search Engine Tool — Crawler, Positional Index & TF-IDF Retrieval
 
-A command-line search engine for [quotes.toscrape.com](https://quotes.toscrape.com/) built as Coursework 2 for COMP3011 Web Services and Web Data at the University of Leeds.
+> Built a search engine pipeline that crawls **202 pages**, builds a positional inverted index covering approximately **4,646 terms**, supports TF-IDF ranking, exact phrase search and spelling suggestions, and achieves measured **sub-millisecond query latency** on the documented benchmark environment.
 
-The tool crawls the target website, builds an inverted index with term frequencies and word positions, and provides an interactive shell for searching.
+`Python` · `Information Retrieval` · `Web Crawler` · `Inverted Index` · `TF-IDF` · `Phrase Matching` · `Benchmarks` · `Pytest`
 
-## Features
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **BFS web crawler** with 6-second politeness window, retry/backoff, and URL normalisation.
-- **Inverted index** storing term frequency, word positions, document frequency, and title-field frequency per posting.
-- **Conjunctive (AND) search** — multi-word queries return only pages containing all terms.
-- **TF-IDF ranking** — results are ranked by log-normalised TF × IDF with a title-field boost.
-- **Exact phrase search** — wrap a query in double quotes (`find "good friends"`) to require consecutive term positions. Unquoted queries still apply a 1.5× score boost for phrase matches.
-- **Query suggestions** — misspelled terms trigger edit-distance-based suggestions from the index vocabulary.
-- **JSON index storage** — human-readable, portable, inspectable by markers.
+---
+
+## 20-second project view
+
+| Dimension | Details |
+| :--- | :--- |
+| **Crawler** | BFS web crawler with 6-second politeness window, retry/backoff, and URL normalisation crawling **202 pages**. |
+| **Positional Index** | Inverted index storing term frequency, document frequency, title frequency, and exact word positions covering **4,646 terms** (~2.6 MB JSON). |
+| **Retrieval & Ranking** | Conjunctive AND search with log-normalised TF-IDF ranking ($ (1 + \log_{10}(tf)) \times \log_{10}(N/df) \times title\_boost $) and 1.5× phrase score boost. |
+| **UX Features** | Double-quote exact phrase search (`find "good friends"`) and `difflib` edit-distance spelling suggestions for query typos. |
+| **Performance** | Measured query latency: **0.04 ms** (single-word), **0.02 ms** (multi-word), **37.4 ms** (index load from JSON). |
+| **Testing** | Modular unit and integration test suite with static HTML fixtures (no live network dependencies). |
+
+---
 
 ## Architecture
 
@@ -35,6 +43,8 @@ The tool crawls the target website, builds an inverted index with term frequenci
 ```
 
 **Data flow:** `crawl → extract_page_text → tokenize → build_index → save_index` (build), then `load_index → find/print_term` (query).
+
+---
 
 ## Project Structure
 
@@ -241,6 +251,14 @@ Where `title_boost = 2.0` if the term appears in the page title.
 - **Query (find):** O(K₁ + K₂ + ... + Kₙ) where Kᵢ is the length of each term's posting list, using set intersection starting from the shortest list.
 - **Phrase detection:** O(S × Q) where S is the number of starting positions and Q is the number of query terms.
 
+## Related Portfolio Work
+
+- [Policy Copilot](https://github.com/NathS04/policy_copilot_submission) — Audit-Ready RAG with Citation Enforcement & Evaluation Harness
+- [EventHub](https://github.com/NathS04/comp3011-cw1-api) — Production-Style FastAPI Event API with 24 REST Endpoints & Provenance Tracking
+- [Ledger Data Quality](https://github.com/NathS04/ledger-data-quality) — Python + SQL Financial Data Controls & Reconciliation Pipeline
+
+---
+
 ## References
 
 - Croft, W. B., Metzler, D., and Strohman, T. (2015). *Search Engines: Information Retrieval in Practice*. Pearson — TF-IDF formulation, posting-list intersection, and field-weighted retrieval.
@@ -249,3 +267,4 @@ Where `title_boost = 2.0` if the term appears in the page title.
 - Beautiful Soup 4 documentation — <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>
 - `difflib` standard library (used for `get_close_matches` query suggestions) — <https://docs.python.org/3/library/difflib.html>
 - Target dataset: <https://quotes.toscrape.com/> — practice site provided by the brief.
+
