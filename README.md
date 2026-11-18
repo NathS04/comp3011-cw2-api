@@ -1,11 +1,15 @@
 # Search Engine Tool — Crawler, Positional Index & TF-IDF Retrieval
 
-> Built a search engine pipeline that crawls **202 pages**, builds a positional inverted index covering approximately **4,646 terms**, supports TF-IDF ranking, exact phrase search and spelling suggestions, and achieves measured **sub-millisecond query latency** on the documented benchmark environment.
+> University of Leeds COMP3011 coursework: a Python crawler and search engine with a positional inverted index, TF-IDF ranking, exact phrase queries and spelling suggestions. The documented crawl contains 202 pages and approximately 4,646 indexed terms.
+
+Performance figures below are historical measurements on that small local corpus and the documented Apple Silicon environment. They are not latency guarantees for other datasets or hardware.
+
+[Portfolio — Future](https://nathaniel-sebastian-portfolio.nathannn-s04.chatgpt.site/) · [About Nathaniel Sebastian](https://github.com/NathS04)
+
 
 `Python` · `Information Retrieval` · `Web Crawler` · `Inverted Index` · `TF-IDF` · `Phrase Matching` · `Benchmarks` · `Pytest`
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
@@ -222,7 +226,7 @@ Key results (Apple Silicon, Python 3.11+):
 | Multi-word query | 0.02 ms |
 | Missing term | 0.001 ms |
 
-All queries complete in sub-millisecond time. See `docs/benchmarks.md` for full complexity analysis.
+The five recorded benchmark queries completed in under 1 ms on the documented corpus and environment. See `docs/benchmarks.md` for the measurements and reproduction command; performance changes with the query, corpus and hardware.
 
 ## Design Decisions
 
@@ -253,8 +257,8 @@ Where `title_boost = 2.0` if the term appears in the page title.
 
 ## Related Portfolio Work
 
-- [Policy Copilot](https://github.com/NathS04/policy_copilot_submission) — Audit-Ready RAG with Citation Enforcement & Evaluation Harness
-- [EventHub](https://github.com/NathS04/comp3011-cw1-api) — Production-Style FastAPI Event API with 24 REST Endpoints & Provenance Tracking
+- [Policy Copilot](https://github.com/NathS04/policy_copilot_submission) — Academic policy-question-answering prototype with evidence checks and evaluation
+- [EventHub](https://github.com/NathS04/comp3011-cw1-api) — Academic FastAPI event and RSVP API with authentication and provenance
 - [Ledger Data Quality](https://github.com/NathS04/ledger-data-quality) — Python + SQL Financial Data Controls & Reconciliation Pipeline
 
 ---
