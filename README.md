@@ -4,7 +4,7 @@
 
 Performance figures below are historical measurements on that small local corpus and the documented Apple Silicon environment. They are not latency guarantees for other datasets or hardware.
 
-[Portfolio — Future](https://nathaniel-sebastian-portfolio.nathannn-s04.chatgpt.site/) · [About Nathaniel Sebastian](https://github.com/NathS04)
+[Portfolio — Future](https://future-nathaniel.pages.dev/) · [About Nathaniel Sebastian](https://github.com/NathS04)
 
 
 `Python` · `Information Retrieval` · `Web Crawler` · `Inverted Index` · `TF-IDF` · `Phrase Matching` · `Benchmarks` · `Pytest`
